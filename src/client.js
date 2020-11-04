@@ -28,6 +28,14 @@ function formatResultsJSON(json) {
 
 function handleErrorResponse({ response, json }) {
   if (!response.ok) {
+    // custom exception
+    if (
+      "undefined" !== typeof response.message &&
+      "aborted" === response.message
+    ) {
+      throw new Error(response.message);
+    }
+
     const message = Array.isArray(json)
       ? ` ${flatten(json.map(response => response.errors)).join(", ")}`
       : `${json.errors ? " " + json.errors : ""}`;
@@ -224,6 +232,8 @@ export default class Client {
    * @returns {Promise} An empty Promise, otherwise throws an Error.
    */
   click({ query, documentId, requestId, tags = [] }) {
+    // disable this
+    /*
     const params = {
       query,
       document_id: documentId,
@@ -239,5 +249,6 @@ export default class Client {
       this.cacheResponses,
       { additionalHeaders: this.additionalHeaders }
     ).then(handleErrorResponse);
+    */
   }
 }
